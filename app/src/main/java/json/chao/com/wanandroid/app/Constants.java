@@ -16,6 +16,8 @@ public class Constants {
 
     static final String  BUGLY_ID = "a29fb52485";
 
+    public static final String MY_SHARED_PREFERENCE = "my_shared_preference";
+
     /**
      * url
      */
@@ -57,6 +59,11 @@ public class Constants {
     public static final String ARG_PARAM2 = "param2";
 
     /**
+     * Phone MANUFACTURER
+     */
+    public static final String SAMSUNG = "samsung";
+
+    /**
      * Tab colors
      */
     public static final int[] TAB_COLORS = new int[]{
@@ -92,6 +99,8 @@ public class Constants {
      * Avoid double click time area
      */
     public static final long CLICK_TIME_AREA = 1000;
+
+    public static final long DOUBLE_INTERVAL_TIME = 2000;
 
 
     public static final String ARTICLE_LINK = "article_link";

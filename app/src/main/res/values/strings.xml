@@ -51,7 +51,7 @@
     <string name="install">install</string>
     <string name="logout_tint">Log out?</string>
     <string name="failed_to_obtain_banner_data">Failed to obtain advertising data</string>
-    <string name="failed_to_obtain_article_list">Gets the article list data</string>
+    <string name="failed_to_obtain_article_list">Failed gets the article list data</string>
 
     //Knowledge hierarchy
     <string name="failed_to_obtain_knowledge_data">Failure to obtain knowledge system data</string>
@@ -97,6 +97,10 @@
     <string name="setting">Setting</string>
     <string name="send_email">Select the email client:</string>
     <string name="load_more_no_data">There\'s no extra data</string>
+    <string name="register_account_hint">Email/Phone number</string>
+    <string name="register_password_hint">Enter password</string>
+    <string name="register_confirm_password_hint">Confirm password</string>
+    <string name="register_success">Register success</string>
 
 
 </resources>

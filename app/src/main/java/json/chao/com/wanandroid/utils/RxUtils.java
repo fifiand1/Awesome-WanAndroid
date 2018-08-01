@@ -1,9 +1,10 @@
 package json.chao.com.wanandroid.utils;
 
-import io.reactivex.Flowable;
 import io.reactivex.FlowableTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -57,7 +58,7 @@ public class RxUtils {
     }
 
     /**
-     * 统一返回结果处理
+     * 收藏返回结果处理
      * @param <T> 指定的泛型类型
      * @return ObservableTransformer
      */
@@ -89,4 +90,6 @@ public class RxUtils {
             }
         });
     }
+
+
 }

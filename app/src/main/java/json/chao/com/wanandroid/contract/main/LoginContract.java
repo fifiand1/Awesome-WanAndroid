@@ -1,9 +1,8 @@
 package json.chao.com.wanandroid.contract.main;
 
 import json.chao.com.wanandroid.base.presenter.AbstractPresenter;
-import json.chao.com.wanandroid.core.bean.BaseResponse;
 import json.chao.com.wanandroid.core.bean.main.login.LoginData;
-import json.chao.com.wanandroid.base.view.BaseView;
+import json.chao.com.wanandroid.base.view.AbstractView;
 
 /**
  * @author quchao
@@ -12,22 +11,13 @@ import json.chao.com.wanandroid.base.view.BaseView;
 
 public interface LoginContract {
 
-    interface View extends BaseView {
+    interface View extends AbstractView {
 
         /**
          * Show login data
          *
-         * @param loginData LoginData
          */
-        void showLoginData(LoginData loginData);
-
-        /**
-         * Show register data
-         *
-         * @param loginData LoginData
-         */
-        void showRegisterData(LoginData loginData);
-
+        void showLoginSuccess();
     }
 
     interface Presenter extends AbstractPresenter<View> {
@@ -53,15 +43,5 @@ public interface LoginContract {
          * @param password password
          */
         void getLoginData(String username, String password);
-
-        /**
-         * 注册
-         * http://www.wanandroid.com/user/register
-         *
-         * @param username user name
-         * @param password password
-         * @param rePassword re password
-         */
-        void getRegisterData(String username, String password, String rePassword);
     }
 }

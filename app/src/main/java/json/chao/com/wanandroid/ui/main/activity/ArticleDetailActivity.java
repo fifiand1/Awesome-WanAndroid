@@ -72,20 +72,30 @@ public class ArticleDetailActivity extends BaseActivity<ArticleDetailPresenter> 
     }
 
     @Override
-    protected void initInject() {
-        getActivityComponent().inject(this);
+    protected int getLayoutId() {
+        return R.layout.activity_article_detail;
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_article_detail;
+    protected void initToolbar() {
+        getBundleData();
+        mToolbar.setTitle(Html.fromHtml(title));
+        setSupportActionBar(mToolbar);
+        StatusBarUtil.immersive(this);
+        StatusBarUtil.setPaddingSmart(this, mToolbar);
+        mToolbar.setNavigationOnClickListener(v -> {
+            if (isCollect) {
+                RxBus.getDefault().post(new CollectEvent(false));
+            } else {
+                RxBus.getDefault().post(new CollectEvent(true));
+            }
+            onBackPressedSupport();
+        });
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void initEventAndData() {
-        initToolBar();
-
         mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent(mWebContent, new LinearLayout.LayoutParams(-1, -1))
                 .useDefaultIndicator()
@@ -142,15 +152,7 @@ public class ArticleDetailActivity extends BaseActivity<ArticleDetailPresenter> 
         assert bundle != null;
         isCommonSite = (boolean) bundle.get(Constants.IS_COMMON_SITE);
         if (!isCommonSite) {
-            getMenuInflater().inflate(R.menu.menu_acticle, menu);
-            mCollectItem = menu.findItem(R.id.item_collect);
-            if (isCollect) {
-                mCollectItem.setTitle(getString(R.string.cancel_collect));
-                mCollectItem.setIcon(R.mipmap.ic_toolbar_like_p);
-            } else {
-                mCollectItem.setTitle(getString(R.string.collect));
-                mCollectItem.setIcon(R.mipmap.ic_toolbar_like_n);
-            }
+            unCommonSiteEvent(menu);
         } else {
             getMenuInflater().inflate(R.menu.menu_article_common, menu);
         }
@@ -221,46 +223,6 @@ public class ArticleDetailActivity extends BaseActivity<ArticleDetailPresenter> 
         }
     }
 
-    private void collectEvent() {
-        if (!mPresenter.getLoginStatus()) {
-            CommonUtils.showMessage(this, getString(R.string.login_tint));
-            startActivity(new Intent(this, LoginActivity.class));
-        } else {
-            if (mCollectItem.getTitle().equals(getString(R.string.collect))) {
-                mPresenter.addCollectArticle(articleId);
-            } else {
-                if (isCollectPage) {
-                    mPresenter.cancelCollectPageArticle(articleId);
-                } else {
-                    mPresenter.cancelCollectArticle(articleId);
-                }
-            }
-        }
-    }
-
-    private void initToolBar() {
-        bundle = getIntent().getExtras();
-        assert bundle != null;
-        title = (String) bundle.get(Constants.ARTICLE_TITLE);
-        setToolBar(mToolbar, Html.fromHtml(title));
-        StatusBarUtil.immersive(this);
-        StatusBarUtil.setPaddingSmart(this, mToolbar);
-        mToolbar.setNavigationOnClickListener(v -> {
-            if (isCollect) {
-                RxBus.getDefault().post(new CollectEvent(false));
-            } else {
-                RxBus.getDefault().post(new CollectEvent(true));
-            }
-            onBackPressedSupport();
-        });
-
-        articleLink = (String) bundle.get(Constants.ARTICLE_LINK);
-        articleId = ((int) bundle.get(Constants.ARTICLE_ID));
-        isCommonSite = ((boolean) bundle.get(Constants.IS_COMMON_SITE));
-        isCollect = ((boolean) bundle.get(Constants.IS_COLLECT));
-        isCollectPage = ((boolean) bundle.get(Constants.IS_COLLECT_PAGE));
-    }
-
     @Override
     public void showCollectArticleData(FeedArticleListData feedArticleListData) {
         isCollect = true;
@@ -278,5 +240,46 @@ public class ArticleDetailActivity extends BaseActivity<ArticleDetailPresenter> 
         mCollectItem.setIcon(R.mipmap.ic_toolbar_like_n);
         CommonUtils.showSnackMessage(this, getString(R.string.cancel_collect_success));
     }
+
+    private void unCommonSiteEvent(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_acticle, menu);
+        mCollectItem = menu.findItem(R.id.item_collect);
+        if (isCollect) {
+            mCollectItem.setTitle(getString(R.string.cancel_collect));
+            mCollectItem.setIcon(R.mipmap.ic_toolbar_like_p);
+        } else {
+            mCollectItem.setTitle(getString(R.string.collect));
+            mCollectItem.setIcon(R.mipmap.ic_toolbar_like_n);
+        }
+    }
+
+    private void collectEvent() {
+        if (!mPresenter.getLoginStatus()) {
+            CommonUtils.showMessage(this, getString(R.string.login_tint));
+            startActivity(new Intent(this, LoginActivity.class));
+        } else {
+            if (mCollectItem.getTitle().equals(getString(R.string.collect))) {
+                mPresenter.addCollectArticle(articleId);
+            } else {
+                if (isCollectPage) {
+                    mPresenter.cancelCollectPageArticle(articleId);
+                } else {
+                    mPresenter.cancelCollectArticle(articleId);
+                }
+            }
+        }
+    }
+
+    private void getBundleData() {
+        bundle = getIntent().getExtras();
+        assert bundle != null;
+        title = (String) bundle.get(Constants.ARTICLE_TITLE);
+        articleLink = (String) bundle.get(Constants.ARTICLE_LINK);
+        articleId = ((int) bundle.get(Constants.ARTICLE_ID));
+        isCommonSite = ((boolean) bundle.get(Constants.IS_COMMON_SITE));
+        isCollect = ((boolean) bundle.get(Constants.IS_COLLECT));
+        isCollectPage = ((boolean) bundle.get(Constants.IS_COLLECT_PAGE));
+    }
+
 
 }
