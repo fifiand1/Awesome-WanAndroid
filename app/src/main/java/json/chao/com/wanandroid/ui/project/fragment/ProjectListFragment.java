@@ -30,7 +30,6 @@ import json.chao.com.wanandroid.utils.JudgeUtils;
  * @author quchao
  * @date 2018/2/24
  */
-
 public class ProjectListFragment extends BaseRootFragment<ProjectListPresenter> implements ProjectListContract.View {
 
     @BindView(R.id.normal_view)
@@ -38,7 +37,6 @@ public class ProjectListFragment extends BaseRootFragment<ProjectListPresenter> 
     @BindView(R.id.project_list_recycler_view)
     RecyclerView mRecyclerView;
 
-    private List<FeedArticleData> mDatas;
     private ProjectListAdapter mAdapter;
     private boolean isRefresh = true;
     private int mCurrentPage;
@@ -55,7 +53,6 @@ public class ProjectListFragment extends BaseRootFragment<ProjectListPresenter> 
         setRefresh();
         Bundle bundle = getArguments();
         cid = bundle.getInt(Constants.ARG_PARAM1);
-        initRecyclerView();
         mPresenter.getProjectListData(mCurrentPage, cid, true);
         if (CommonUtils.isNetworkConnected()) {
             showLoading();
@@ -71,12 +68,11 @@ public class ProjectListFragment extends BaseRootFragment<ProjectListPresenter> 
 
     @Override
     public void showProjectListData(ProjectListData projectListData) {
-        mDatas = projectListData.getDatas();
         if (isRefresh) {
-            mAdapter.replaceData(mDatas);
+            mAdapter.replaceData(projectListData.getDatas());
         } else {
-            if (mDatas.size() > 0) {
-                mAdapter.addData(mDatas);
+            if (projectListData.getDatas().size() > 0) {
+                mAdapter.addData(projectListData.getDatas());
             } else {
                 CommonUtils.showMessage(_mActivity, getString(R.string.load_more_no_data));
             }
@@ -103,14 +99,20 @@ public class ProjectListFragment extends BaseRootFragment<ProjectListPresenter> 
         }
     }
 
+    @Override
+    protected void initView() {
+        super.initView();
+        initRecyclerView();
+    }
+
     private void initRecyclerView() {
-        mDatas = new ArrayList<>();
+        List<FeedArticleData> mDatas = new ArrayList<>();
         mAdapter = new ProjectListAdapter(R.layout.item_project_list, mDatas);
         mAdapter.setOnItemClickListener((adapter, view, position) -> startProjectPager(position));
         mAdapter.setOnItemChildClickListener((adapter, view, position) -> clickChildEvent(view, position));
-        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(_mActivity));
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void clickChildEvent(View view, int position) {
@@ -158,6 +160,9 @@ public class ProjectListFragment extends BaseRootFragment<ProjectListPresenter> 
 
     private void setRefresh() {
         mCurrentPage = 1;
+        if (mRefreshLayout == null) {
+            return;
+        }
         mRefreshLayout.setOnRefreshListener(refreshLayout -> {
             mCurrentPage = 1;
             isRefresh = true;
